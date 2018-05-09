@@ -51,16 +51,23 @@ export declare class GeoCoordinate {
      */
     earthRadius: number;
     /**
-     * returns true if neither longitude nor latitude is set.
-     */
-    readonly isUnknown: boolean;
-    /**
-     * @description returns true if longitude and latitude is set.
+     * returns true if  longitude and latitude is set.
      */
     readonly isKnown: boolean;
+    /**
+     * @description returns true if longitude or latitude or both are null.
+     */
+    readonly isUnknown: boolean;
     constructor(obj?: ICoordinateShape);
     Equals(geoCoordinate: GeoCoordinate): boolean;
-    toString: () => string;
+    toString: (withUnits?: boolean) => string;
+    /**
+     * @description Function to calculate the distance in meters between to
+     * points. (Different) Altitude is ignored.
+     * @param {GeoCoordinate} other GeoCoordinate to/from
+     * @param {boolean} loxodrome calculation on Loxodrome or Great circle? Default is Great Circle
+     * @returns {number | null} Number in meters, If calc is not possible null is returned
+     */
     getDistanceTo(other: GeoCoordinate, loxodrome?: boolean): number | null;
     getInitBearingTo(other: GeoCoordinate, loxodrome?: boolean): number | null;
     getMidBearingTo(other: GeoCoordinate, loxodrome?: boolean): number | null;
