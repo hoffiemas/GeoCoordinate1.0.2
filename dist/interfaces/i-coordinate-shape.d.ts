@@ -1,9 +1,9 @@
 export interface ICoordinateShape {
-    Latitude?: number;
-    Longitude?: number;
-    Altitude?: number;
-    HorizontalAccuracy?: number;
-    VerticalAccuracy?: number;
-    Speed?: number;
-    Course?: number;
+    latitude?: number;
+    longitude?: number;
+    altitude?: number;
+    horizontalAccuracy?: number;
+    verticalAccuracy?: number;
+    speed?: number;
+    course?: number;
 }

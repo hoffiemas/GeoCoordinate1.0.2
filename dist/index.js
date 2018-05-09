@@ -40,15 +40,15 @@ class GeoCoordinate {
             return result;
         };
         if (obj) {
-            this.latitude = (obj.Latitude === undefined) ? null : obj.Latitude;
-            this.longitude = (obj.Longitude === undefined) ? null : obj.Longitude;
-            this.altitude = (obj.Altitude === undefined) ? null : obj.Altitude;
-            this.horizontalAccuracy = (obj.HorizontalAccuracy === undefined) ?
-                null : obj.HorizontalAccuracy;
-            this.verticalAccuracy = (obj.VerticalAccuracy === undefined) ? null :
-                obj.VerticalAccuracy;
-            this.speed = obj.Speed === undefined ? null : obj.Speed;
-            this.course = obj.Course === undefined ? null : obj.Course;
+            this.latitude = (obj.latitude === undefined) ? null : obj.latitude;
+            this.longitude = (obj.longitude === undefined) ? null : obj.longitude;
+            this.altitude = (obj.altitude === undefined) ? null : obj.altitude;
+            this.horizontalAccuracy = (obj.horizontalAccuracy === undefined) ?
+                null : obj.horizontalAccuracy;
+            this.verticalAccuracy = (obj.verticalAccuracy === undefined) ? null :
+                obj.verticalAccuracy;
+            this.speed = obj.speed === undefined ? null : obj.speed;
+            this.course = obj.course === undefined ? null : obj.course;
         }
     }
     /**
