@@ -62,19 +62,19 @@ export class GeoCoordinate {
   }
 
   /**
-   * returns true if neither longitude nor latitude is set.
-   */
-  get isUnknown() {
-    if (this._longitude && this._latitude) {
-      return false;
-    }
-    return true;
-  }
-  /**
-   * @description returns true if longitude and latitude is set.
+   * returns true if  longitude and latitude is set.
    */
   get isKnown() {
-    return !this.isUnknown;
+    if (this._longitude !== null && this._latitude !== null) {
+      return true;
+    }
+    return false;
+  }
+  /**
+   * @description returns true if longitude or latitude or both are null.
+   */
+  get isUnknown() {
+    return !this.isKnown;
   }
   /**
    * @description latitude in decimal Deg 
@@ -83,9 +83,9 @@ export class GeoCoordinate {
     value = (value == null || value > 90 || value < -90) ? null : value;
     this._latitude = value;
   }
- /**
-   * @description longitude in decimal Deg 
-   */
+  /**
+    * @description longitude in decimal Deg 
+    */
   set longitude(value: number | null) {
     value = (value == null || value > 180 || value < -180) ? null : value;
     this._longitude = value;
@@ -123,49 +123,69 @@ export class GeoCoordinate {
 
   constructor(obj?: ICoordinateShape) {
     if (obj) {
-      this.latitude = obj.Latitude == undefined ? null : obj.Latitude;
-      this.longitude = obj.Longitude == undefined ? null : obj.Longitude;
-      this.altitude = obj.Altitude == undefined ? null : obj.Altitude;
-      this.horizontalAccuracy = obj.HorizontalAccuracy == undefined ?
+      this.latitude = (obj.Latitude === undefined) ? null : obj.Latitude;
+      this.longitude = (obj.Longitude === undefined) ? null : obj.Longitude;
+      this.altitude = (obj.Altitude === undefined) ? null : obj.Altitude;
+      this.horizontalAccuracy = (obj.HorizontalAccuracy === undefined) ?
         null : obj.HorizontalAccuracy;
 
-      this.verticalAccuracy = obj.VerticalAccuracy == undefined ?
-        null : obj.VerticalAccuracy;
+      this.verticalAccuracy = (obj.VerticalAccuracy === undefined) ? null :
+        obj.VerticalAccuracy;
 
-      this.speed = obj.Speed == undefined ? null : obj.Speed;
-      this.course = obj.Course == undefined ? null : obj.Course;
+      this.speed = obj.Speed === undefined ? null : obj.Speed;
+      this.course = obj.Course === undefined ? null : obj.Course;
     }
   }
 
   public Equals(geoCoordinate: GeoCoordinate): boolean {
-    if (this._longitude === geoCoordinate.longitude
-      && this._latitude === geoCoordinate.latitude) {
-
-      return true;
+    if (geoCoordinate) {
+      const lonEqual = (this._longitude === geoCoordinate.longitude);
+      const latEqual = (this._latitude === geoCoordinate.latitude);
+      if (lonEqual && latEqual) return true;
     }
     return false;
   }
 
-  public toString = (): string => {
+  public toString = (withUnits: boolean = false): string => {
     let result: string = 'unknown';
 
+    // isKnown meens that at least long and lat are valid numeric
     if (this.isKnown) {
-      const alt = this._altitude ? this._altitude.toString() : 'unknown';
-      const course = this._course ? this._course.toString() : 'unknown';
-      const speed = this._speed ? this._speed.toString() : 'unknown';
-      const vAcc = this._verticalAccuracy ?
+      let long = this._longitude!.toString(); //it has always a value != null because of isKnown
+      let lat = this._latitude!.toString();
+      let alt = this._altitude ? this._altitude.toString() : 'unknown';
+      let course = this._course ? this._course.toString() : 'unknown';
+      let speed = this._speed ? this._speed.toString() : 'unknown';
+      let vAcc = this._verticalAccuracy ?
         this._verticalAccuracy.toString() : 'unknown';
 
-      const hAcc = this._horizontalAccuracy ?
+      let hAcc = this._horizontalAccuracy ?
         this._horizontalAccuracy.toString() : 'unknown';
 
-      result = `long: ${this._longitude}, lat: ${this._latitude},` +
+      if (withUnits) {
+        long = long + ' Deg';
+        lat = lat + ' Deg';
+        (alt != 'unknown') && (alt += ' m');
+        (course != 'unknown') && (course += ' Deg');
+        (speed != 'unknown') && (speed += ' m/s');
+        (vAcc != 'unknown') && (vAcc += 'm');
+        (hAcc != 'unknown') && (hAcc += 'm');
+      }
+
+      result = `long: ${long}, lat: ${lat},` +
         ` alt: ${alt}, course: ${course}, speed: ${speed},` +
         ` vertAcc: ${vAcc}, horzAcc: ${hAcc}`;
     }
     return result;
   }
 
+  /**
+   * @description Function to calculate the distance in meters between to
+   * points. (Different) Altitude is ignored.
+   * @param {GeoCoordinate} other GeoCoordinate to/from  
+   * @param {boolean} loxodrome calculation on Loxodrome or Great circle? Default is Great Circle
+   * @returns {number | null} Number in meters, If calc is not possible null is returned  
+   */
   public getDistanceTo(other: GeoCoordinate, loxodrome: boolean = false):
     number | null {
 
